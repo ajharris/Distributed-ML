@@ -145,10 +145,10 @@ Standard outputs:
 
 A TDD workflow will be applied to:
 
-1. Define schema constants.
-2. Write schema validation tests.
-3. Implement dataset-agnostic constructor.
-4. Build NLST ingestion.
-5. Add ingestion for COPDGene and LIDC-IDRI.
-6. Write dataset-level validators.
-7. Produce dataset Parquet outputs.
+- [ ] Define schema constants.
+- [ ] Write schema validation tests.
+- [ ] Implement dataset-agnostic constructor.
+- [ ] Build NLST ingestion.
+- [ ] Add ingestion for COPDGene and LIDC-IDRI.
+- [ ] Write dataset-level validators.
+- [ ] Produce dataset Parquet outputs.
