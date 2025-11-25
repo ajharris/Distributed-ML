@@ -1,5 +1,9 @@
 # Scalable Machine Learning for Large-Scale CT Phenotyping of COPD
 
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&repo=Distributed-ML)
+
+[![Open in Google Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/<your-username>/Distributed-ML/blob/main/notebooks/pipeline-demos/README.ipynb)
+
 This repository contains the code, experiments, and documentation for a research project exploring scalable machine learning methods for large-scale lung CT analysis, with a focus on chronic obstructive pulmonary disease (COPD). The project integrates medical imaging, radiomics, deep learning, distributed computing, and reproducible research practices.
 
 The central objective is to build a fully scalable, cloud-compatible pipeline for CT preprocessing, feature extraction, and phenotypic modeling using large public datasets such as NLST, COPDGene (subset), and LIDC-IDRI. The project leverages Dask for distributed computation across thousands of CT volumes to enable production-scale processing and analysis.
@@ -107,58 +111,78 @@ Users must obtain necessary approvals for these datasets where required.
 
 ## Getting Started
 
-### 1. Local development environment
+This project supports **three fully reproducible workflows**:
 
-You can work locally using either **micromamba** (recommended) or **conda**.
+* **Local development** using micromamba or conda
+* **GitHub Codespaces** using the included devcontainer
+* **Google Colab (GPU)** using a lightweight pip environment
 
-#### Option A: micromamba
+Below is the recommended setup for **local development**.
+
+---
+
+### Local Development Environment (micromamba recommended)
+
+The base environment is defined in `environment.yml` (Python 3.9). Deep‑learning and radiomics packages are installed afterward using pip to avoid build‑isolation problems.
+
+#### 1. Create the base environment
+
+**micromamba:**
 
 ```bash
 micromamba create -n scalable-ct -f environment.yml
 micromamba activate scalable-ct
 ```
 
-#### Option B: conda
+**conda:**
 
 ```bash
 conda env create -f environment.yml
 conda activate scalable-ct
 ```
 
-After creating the base environment, install the deep-learning and radiomics extras via `pip`:
+#### 2. Install pip‑based packages
 
 ```bash
 # Radiomics
 pip install --no-build-isolation "pyradiomics==3.0.1"
 
-# Deep learning stack (CPU by default; see notes below for GPU)
+# MONAI + helpers
 pip install "monai>=1.3,<1.5" "torchmetrics>=1.3,<1.6" "einops>=0.7,<0.9"
 
-# PyTorch (CPU build)
+# PyTorch (CPU build for macOS/Linux)
 pip install torch torchvision torchaudio \
   --index-url https://download.pytorch.org/whl/cpu
 ```
 
-> If you have a local GPU and a compatible CUDA toolkit, you can swap the `cpu` index URL above for an appropriate CUDA build from the PyTorch docs.
+If you have a CUDA‑capable system, substitute the appropriate CUDA wheel index URL from the PyTorch installation guide.
 
-### 2. Configure dataset paths
+#### 3. Configure dataset paths
 
-Edit `config/paths.yml` to point to your local or cloud-based data storage.
+Edit:
 
-### 3. Run the preprocessing pipeline
+```
+config/paths.yml
+```
+
+to point to your dataset locations.
+
+#### 4. Run core pipelines
+
+**Preprocessing:**
 
 ```bash
 python -m src.preprocess.run --config config/preprocess/nlst.yaml
 ```
 
-### 4. Extract features
+**Feature extraction:**
 
 ```bash
 python -m src.features.radiomics --config config/features/radiomics.yaml
 python -m src.features.deep_embeddings --config config/features/embeddings.yaml
 ```
 
-### 5. Train models
+**Model training:**
 
 ```bash
 python -m src.train.cluster --config config/models/unsupervised.yaml

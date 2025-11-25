@@ -1,0 +1,1 @@
+# Local data caching (ignored in .gitignore)

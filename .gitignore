@@ -31,8 +31,21 @@ htmlcov/
 # -------------------------
 
 # Data (raw & intermediate)
-data/
-!data/README.md   # optional placeholder to keep directory
+
+# Ignore entire data directory
+data/**
+
+# But allow the folder itself (necessary for sub-exceptions)
+!data/
+
+# Keep only the README.md inside data/
+!data/README.md
+
+# Ignore specific large subdirectories
+data/cache/
+data/preprocessed/
+data/features/
+
 
 # Cached preprocessing outputs
 data/cache/
