@@ -63,22 +63,108 @@ python scripts/build_metadata.py   --nlst-csv data/raw_metadata/nlst_demo.csv   
 
 ---
 
+
 ## Repository Structure
 
-(Full structure as in your provided tree.)
-
----
-
-## Getting Started
-
+```text
+.
+├── README.md
+│   Main project overview, installation instructions, and navigation links
+│
+├── config/
+│   README.md              Explains configuration files and how pipelines use YAML configs
+│
+├── data/
+│   README.md              Instructions for dataset placement, structure, and storage rules
+│
+│   metadata/              Canonical metadata outputs (not tracked in git)
+│   ├── metadata_COPDGene.parquet   Canonical metadata from COPDGene
+│   ├── metadata_LIDC-IDRI.parquet  Canonical metadata from LIDC-IDRI
+│   └── metadata_NLST.parquet       Canonical metadata from NLST
+│
+│   raw_metadata/          Small CSV fixtures used for demos/tests (not tracked in git)
+│   ├── copdgene_demo.csv          COPDGene demo subset for ingestion tests
+│   ├── lidc_demo.csv              LIDC-IDRI demo subset for ingestion tests
+│   └── nlst_demo.csv              NLST demo subset for ingestion tests
+│
+├── docs/
+│   methodology/           Subdivided methodology documentation
+│   ├── README.md                  Index of methodology subsections
+│   ├── overview.md                Purpose of methodology & structure
+│   ├── project_overview.md        Scientific/clinical background
+│   ├── metadata_schema.md         Canonical dataset metadata schema
+│   ├── dataset_access.md          Dataset download, folder layout, REB/licensing
+│   └── next_steps.md              Development/TDD roadmap
+│
+│   methodology.md         Legacy unified methodology file
+│   references.md          References and citations
+│   results.md             Experiment/benchmark summaries
+│
+├── environment.yml        Conda environment definition
+│
+├── notebooks/
+│   README.md              Notebook organization overview
+│
+│   exploration/           Exploratory data analysis notebooks
+│   ├── README.md
+│   └── parquet_exploration.ipynb  Inspect Parquet metadata files
+│
+│   modeling/
+│   └── README.md          Modeling notebook notes
+│
+│   pipeline-demos/
+│   └── README.md          End-to-end pipeline demo notebooks
+│
+├── requirements-colab.txt Lightweight pip environment for Colab
+│
+├── scripts/
+│   bootstrap_local.sh     Initialize local development environment
+│   build_metadata.py      CLI to generate Parquet metadata from CSV input
+│
+├── src/
+│   README.md              High-level explanation of src/ modules
+│
+│   eval/                  Evaluation metrics & utilities
+│   ├── README.md
+│   └── __init__.py
+│
+│   features/              Radiomics + deep feature extraction
+│   ├── README.md
+│   └── __init__.py
+│
+│   ingest/                Dataset ingestion + metadata standardization
+│   ├── README.md
+│   ├── __init__.py
+│   ├── copdgene.py        Field extraction utilities for COPDGene
+│   ├── copdgene_ingest.py Full COPDGene ingestion pipeline
+│   ├── dataset_validators.py  Field-level validators & schema checks
+│   ├── lidc.py            Field extraction for LIDC-IDRI
+│   ├── lidc_ingest.py     Full LIDC-IDRI ingestion pipeline
+│   ├── metadata_io.py     Reading/writing Parquet and CSV metadata
+│   ├── metadata_schema.py Canonical metadata schema constants
+│   ├── nlst.py            Field extraction for NLST
+│   ├── nlst_ingest.py     Full NLST ingestion pipeline
+│   ├── registry.py        DatasetRegistry abstraction layer
+│   └── row_builder.py     Constructs canonical metadata rows
+│
+│   preprocess/            CT preprocessing pipeline
+│   ├── README.md
+│   └── __init__.py
+│
+│   train/                 Training module entry points
+│   ├── README.md
+│   └── __init__.py
+│
+│   utils/                 Shared utilities (logging, IO, cluster)
+│   ├── README.md
+│   ├── __init__.py
+│   ├── dask_cluster.py    Launch & configure Dask clusters
+│   ├── io.py              I/O helpers for NIfTI, Zarr, DICOM
+│   └── logger.py          Unified logging interface
+│
+└── tests/                 Test suite (pytest)
+    README.md              How tests are organized + how to run them
+    conftest.py            Shared pytest fixtures
+    ingest/                Tests for ingestion modules
+    utils/                 Tests for utils (I/O, logging, Dask)
 ```
-conda env create -f environment.yml
-conda activate scalable-ct
-pytest
-```
-
----
-
-## License
-
-MIT License.
