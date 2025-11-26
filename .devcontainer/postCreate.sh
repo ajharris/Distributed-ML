@@ -13,7 +13,7 @@ echo "[postCreate] Activating env"
 micromamba activate "${ENV_NAME}"
 
 echo "[postCreate] Installing pip-based packages (monai, pyradiomics, torch, etc.)"
-pip install --no-build-isolation "pyradiomics==3.0.1"
+# pip install --no-build-isolation "pyradiomics==3.0.1"
 pip install "monai>=1.3,<1.5" "torchmetrics>=1.3,<1.6" "einops>=0.7,<0.9"
 
 # CPU PyTorch for Codespaces (Linux, no GPU)

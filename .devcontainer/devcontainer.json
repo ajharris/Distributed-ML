@@ -1,9 +1,22 @@
 {
   "name": "Distributed-ML dev",
+
+  // Your base image
   "image": "mambaorg/micromamba:1.5.8",
+
+  // Mount your local repo
   "workspaceFolder": "/workspace",
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
-  "postCreateCommand": "bash .devcontainer/postCreate.sh",
+
+  // Install git + other post-create tasks
+  // "postCreateCommand": "bash .devcontainer/postCreate.sh",
+
+  // Add devcontainer features (this installs git correctly)
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {}
+  },
+
+  // VSCode customizations
   "customizations": {
     "vscode": {
       "settings": {
@@ -18,5 +31,7 @@
       ]
     }
   },
+
+  // Use micromamba's default non-root user
   "remoteUser": "mambauser"
 }
