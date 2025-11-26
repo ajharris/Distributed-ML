@@ -146,13 +146,15 @@ def test_normalize_smoking_status(input_value: str, expected: str) -> None:
 @pytest.mark.parametrize(
     "input_value, expected",
     [
-        ("20050312", "2005-03-12"),      # yyyymmdd
+        ("20050312", "2005-03-12"),      # yyyymmdd (string)
+        (20050312, "2005-03-12"),        # yyyymmdd (int)
         ("2005-03-12", "2005-03-12"),    # already iso
         (None, None),
         ("", None),
     ],
 )
-def test_normalize_acquisition_date(input_value: str, expected: str) -> None:
+def test_normalize_acquisition_date(input_value, expected) -> None:
+    # input_value intentionally not typed as str to allow ints
     assert normalize_acquisition_date(input_value) == expected
 
 

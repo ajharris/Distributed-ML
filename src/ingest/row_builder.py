@@ -110,7 +110,7 @@ def normalize_acquisition_date(value: Optional[str]) -> Optional[str]:
     Supported input formats:
     - None or empty string -> None
     - 'YYYY-MM-DD'         -> unchanged
-    - 'YYYYMMDD'           -> converted to 'YYYY-MM-DD'
+    - 'YYYYMMDD' or integer  -> converted to 'YYYY-MM-DD'
 
     This function is intentionally conservative; if a format is not
     recognized, it raises a ValueError so that dataset loaders must
@@ -119,18 +119,25 @@ def normalize_acquisition_date(value: Optional[str]) -> Optional[str]:
     if value is None:
         return None
 
-    v = value.strip()
+    # Coerce non-string types (e.g., ints from CSV) to string first
+    if isinstance(value, (int, float)):
+        # e.g., 20050312 -> "20050312"
+        v = str(int(value))
+    else:
+        v = str(value).strip()
+
     if not v:
         return None
 
     # Already in ISO form
     if len(v) == 10 and v[4] == "-" and v[7] == "-":
-        # quick sanity check this is actually a date
+        from datetime import datetime
         datetime.strptime(v, "%Y-%m-%d")
         return v
 
     # Compact yyyymmdd form
     if len(v) == 8 and v.isdigit():
+        from datetime import datetime
         dt = datetime.strptime(v, "%Y%m%d")
         return dt.strftime("%Y-%m-%d")
 

@@ -23,18 +23,23 @@ NLST/COPDGene/LIDC column constants defined in:
 
 from __future__ import annotations
 
-import argparse
+# --- ensure project root is on sys.path ---
+import sys
 from pathlib import Path
+
+# This file lives in <repo_root>/scripts/build_metadata.py
+# So the repo root is one level up.
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+import argparse
 from typing import List
 
-import pandas as pd
-
 from src.ingest.metadata_schema import CTMetadataRow
-from src.ingest.nlst_ingest import nlst_row_to_ct_metadata
-from src.ingest.copdgene_ingest import copdgene_row_to_ct_metadata
-from src.ingest.lidc_ingest import lidc_row_to_ct_metadata
 from src.ingest.dataset_validators import assert_valid_dataset_metadata
 from src.ingest.metadata_io import write_per_dataset_parquet
+from src.ingest.registry import DatasetRegistry
 
 
 def parse_args() -> argparse.Namespace:
@@ -72,61 +77,31 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def load_nlst_rows(csv_path: Path) -> List[CTMetadataRow]:
-    """Load NLST metadata CSV and map each row to CTMetadataRow."""
-    df = pd.read_csv(csv_path)
-    rows: List[CTMetadataRow] = []
-
-    for _, row in df.iterrows():
-        nlst_dict = row.to_dict()
-        rows.append(nlst_row_to_ct_metadata(nlst_dict))
-
-    return rows
-
-
-def load_copdgene_rows(csv_path: Path) -> List[CTMetadataRow]:
-    """Load COPDGene metadata CSV and map each row to CTMetadataRow."""
-    df = pd.read_csv(csv_path)
-    rows: List[CTMetadataRow] = []
-
-    for _, row in df.iterrows():
-        copd_dict = row.to_dict()
-        rows.append(copdgene_row_to_ct_metadata(copd_dict))
-
-    return rows
-
-
-def load_lidc_rows(csv_path: Path) -> List[CTMetadataRow]:
-    """Load LIDC-IDRI metadata CSV and map each row to CTMetadataRow."""
-    df = pd.read_csv(csv_path)
-    rows: List[CTMetadataRow] = []
-
-    for _, row in df.iterrows():
-        lidc_dict = row.to_dict()
-        rows.append(lidc_row_to_ct_metadata(lidc_dict))
-
-    return rows
-
-
 def main() -> None:
     args = parse_args()
 
     all_rows: List[CTMetadataRow] = []
 
+    # NLST
     if args.nlst_csv is not None:
         if not args.nlst_csv.exists():
             raise FileNotFoundError(f"NLST CSV not found: {args.nlst_csv}")
-        all_rows.extend(load_nlst_rows(args.nlst_csv))
+        nlst_loader = DatasetRegistry.get("nlst")
+        all_rows.extend(nlst_loader(args.nlst_csv))
 
+    # COPDGene
     if args.copdgene_csv is not None:
         if not args.copdgene_csv.exists():
             raise FileNotFoundError(f"COPDGene CSV not found: {args.copdgene_csv}")
-        all_rows.extend(load_copdgene_rows(args.copdgene_csv))
+        copd_loader = DatasetRegistry.get("copdgene")
+        all_rows.extend(copd_loader(args.copdgene_csv))
 
+    # LIDC-IDRI
     if args.lidc_csv is not None:
         if not args.lidc_csv.exists():
             raise FileNotFoundError(f"LIDC-IDRI CSV not found: {args.lidc_csv}")
-        all_rows.extend(load_lidc_rows(args.lidc_csv))
+        lidc_loader = DatasetRegistry.get("lidc")
+        all_rows.extend(lidc_loader(args.lidc_csv))
 
     if not all_rows:
         raise SystemExit(
