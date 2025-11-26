@@ -188,6 +188,60 @@ Output includes:
 
 ---
 
+# Lung Segmentation
+
+The preprocessing pipeline now includes a deterministic classical lung segmentation module located at:
+
+```
+src/preprocess/segment_lung.py
+```
+
+## Overview
+
+This module provides a lightweight and dataset-agnostic baseline lung segmentation method based on:
+
+- HU thresholding  
+- 3D connected components  
+- Morphological closing  
+- Slice-wise hole filling  
+
+The segmentation function:
+
+- Accepts a 3D CT volume in Hounsfield Units  
+- Produces a binary lung mask aligned to the original voxel grid  
+- Can save the mask to a cache location for reuse  
+- Is fully deterministic: identical inputs and settings always produce identical masks  
+
+## Usage Example
+
+```python
+from src.preprocess.segment_lung import segment_lung_and_save
+
+mask = segment_lung_and_save(
+    volume_hu,                     # 3D HU array (Z, Y, X)
+    spacing_mm=(1.0, 1.0, 1.0),    # optional
+    cache_path="lung_mask.npy",
+)
+```
+
+## Testing
+
+A complete synthetic test suite is located at:
+
+```
+tests/preprocess/test_segment_lung.py
+```
+
+Tests verify:
+
+- mask plausibility  
+- repeatability/determinism  
+- correct cache saving behavior  
+- robustness to edge cases  
+
+This module fulfills the branch requirements for the classical segmentation baseline.
+
+
 # Next Steps
 
 Future work planned in `docs/methodology/next_steps.md` includes:
