@@ -1,5 +1,11 @@
 # 4.  Next Steps
 
+- Full CT preprocessing pipeline (segmentation, spacing normalization)
+- 3D CNN and radiomics feature extraction
+- Large-scale distributed processing
+- Exploratory ML + predictive modeling
+- Automated benchmarking tools
+- Ingestion for additional COPD imaging datasets
 
 ---
 
