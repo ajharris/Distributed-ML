@@ -1,85 +1,24 @@
 # Scalable Machine Learning for Large-Scale CT Phenotyping of COPD
 
-This repository implements a **scalable, reproducible pipeline** for CT-based phenotyping of **Chronic Obstructive Pulmonary Disease (COPD)**.  
-It unifies ingestion, metadata standardization, validation, and Parquet export for major public datasets (COPDGene, NLST, LIDC-IDRI), while laying the foundation for fully distributed CT preprocessing and machine‑learning workflows.
+This repository contains code and documentation for a research project on **scalable CT phenotyping** for **COPD** and lung disease. It focuses on:
+
+- Dataset-agnostic metadata and ingestion for large chest CT cohorts.
+- CT preprocessing (normalization, resampling, segmentation).
+- Feature extraction (radiomics and deep learning–based).
+- Modeling and evaluation utilities.
+- Reproducible workflows driven by tests and environment management.
+
+Full, detailed documentation is provided via the MkDocs-powered documentation site.
 
 ---
 
-# Project Overview
+## Quick start
 
-CT imaging contains rich structural information relevant to COPD severity, progression, and phenotypic subtypes. This project provides:
-
-- A **dataset‑agnostic ingestion system**  
-- A **canonical metadata schema** for heterogeneous datasets  
-- A **validated Parquet output layer** designed for large-scale ML workflows  
-- A structure intended for future **feature extraction**, **distributed preprocessing**, and **predictive modeling**
-
-The system is fully test‑driven, ensuring reproducibility and long‑term maintainability.
-
----
-
-# Current Functionality
-
-## Dataset Ingestion (COPDGene, NLST, LIDC-IDRI)
-Each dataset has:
-- A field extraction script (`copdgene.py`, `nlst.py`, `lidc.py`)
-- A complete ingestion pipeline (`*_ingest.py`)
-- Schema enforcement through `dataset_validators.py`
-- Canonical row construction via `row_builder.py`
-- Validated Parquet output via `metadata_io.py`
-
-All ingestion modules support:
-- Consistent field mapping
-- Per-dataset normalization
-- Type & range validation
-- Canonical Parquet export
-
-## Dataset Registry Working
-The unified registry interface provides:
-
-```python
-DatasetRegistry.get("copdgene")
-DatasetRegistry.get("nlst")
-DatasetRegistry.get("lidc")
-```
-
-## Canonical Metadata Schema
-Defined in `metadata_schema.py` with:
-- Required fields  
-- Standardized naming  
-- COPD-focused metadata structure  
-
-Validators ensure:
-- Complete & correct fields  
-- Type safety  
-- Value sanity checks  
-
-## Metadata I/O Layer
-`metadata_io.py` provides:
-- Parquet load/save
-- Schema checking
-- CSV-to-Parquet transformations
-
-## External Dataset Loading
-`load_external.py` is implemented for future import of new COPD datasets.
-
-## All Tests Passing
-Test coverage includes:
-- Ingestion modules  
-- Validators  
-- Metadata I/O  
-- Row builder  
-- Logger, IO utilities  
-- Dask cluster utilities  
-
-## CLI: Build Metadata
+### 1. Clone the repository
 
 ```bash
-python scripts/build_metadata.py \
---nlst-csv data/raw_metadata/nlst_demo.csv \
---copdgene-csv data/raw_metadata/copdgene_demo.csv \
---lidc-csv data/raw_metadata/lidc_demo.csv \
---output-dir data/metadata
+git clone https://github.com/ajharris/Distributed-ML.git
+cd Distributed-ML
 ```
 
 Output includes:
@@ -107,265 +46,84 @@ APIs:
 
 # Repository Structure (with notes)
 
-```
-.
-├── README.md                       # Main project overview
-│
-├── config/
-│   └── README.md                   # Pipeline configuration documentation
-│
-├── data/
-│   ├── README.md                   # Data management rules & info
-│   ├── metadata/                   # Canonical Parquet metadata outputs
-│   │   ├── copdgene_demo.parquet   # Demo COPDGene subset
-│   │   ├── metadata.parquet        # Unified merged metadata
-│   │   ├── metadata_COPDGene.parquet
-│   │   ├── metadata_LIDC-IDRI.parquet
-│   │   └── metadata_NLST.parquet
-│   └── raw_metadata/               # Input CSVs for ingestion
-│       ├── copdgene_demo.csv
-│       ├── lidc_demo.csv
-│       └── nlst_demo.csv
-│
-├── docs/
-│   ├── methodology/                # Detailed documentation for the pipeline
-│   │   ├── README.md
-│   │   ├── dataset_access.md       # Access instructions for NLST/COPDGene/LIDC
-│   │   ├── metadata_schema.md      # Canonical metadata schema description
-│   │   ├── next_steps.md           # Planned development roadmap
-│   │   ├── overview.md
-│   │   └── project_overview.md     # Clinical + technical background
-│   ├── references.md
-│   └── results.md                  # Generated experiment summaries (future)
-│
-├── environment.yml                 # Conda environment definition
-│
-├── notebooks/
-│   ├── README.md
-│   ├── exploration/
-│   │   ├── README.md
-│   │   └── parquet_exploration.ipynb  # Inspecting Parquet metadata
-│   ├── modeling/
-│   │   └── README.md
-│   └── pipeline-demos/
-│       └── README.md
-│
-├── requirements-colab.txt          # Lightweight Colab environment
-│
-├── scripts/
-│   ├── bootstrap_local.sh          # Local dev environment setup
-│   └── build_metadata.py           # CLI to run ingestion and build Parquet
-│
-├── src/
-│   ├── README.md                   # High-level explanation of src structure
-│   ├── __init__.py
-│   │
-│   ├── eval/
-│   │   ├── README.md               # Evaluation utilities
-│   │   └── __init__.py
-│   │
-│   ├── features/
-│   │   ├── README.md               # Feature extraction (placeholder)
-│   │   └── __init__.py
-│   │
-│   ├── ingest/                     # Dataset ingestion + normalization
-│   │   ├── README.md
-│   │   ├── copdgene.py             # COPDGene field extraction
-│   │   ├── copdgene_ingest.py      # Full COPDGene ingestion pipeline
-│   │   ├── dataset_validators.py   # Field-level validation rules
-│   │   ├── lidc.py                 # LIDC-IDRI field extraction
-│   │   ├── lidc_ingest.py          # LIDC-IDRI ingestion pipeline
-│   │   ├── load_external.py        # External dataset loader
-│   │   ├── metadata_io.py          # Parquet/CSV IO
-│   │   ├── metadata_schema.py      # Canonical metadata schema
-│   │   ├── nlst.py                 # NLST field extraction
-│   │   ├── nlst_ingest.py          # Full NLST ingestion pipeline
-│   │   ├── registry.py             # DatasetRegistry abstraction
-│   │   └── row_builder.py          # Canonical metadata row builder
-│   │
-│   ├── preprocess/
-│   │   ├── README.md               # CT preprocessing (future work)
-│   │   └── __init__.py
-│   │
-│   ├── train/
-│   │   ├── README.md               # Model training entry points (planned)
-│   │   └── __init__.py
-│   │
-│   └── utils/
-│       ├── README.md               # Logging, IO, distributed utilities
-│       ├── dask_cluster.py         # Dask cluster helper for scaling
-│       ├── io.py                   # IO helpers for NIfTI/DICOM/Zarr
-│       └── logger.py               # Unified logging interface
-│
-└── tests/
-    ├── README.md                   # Test documentation
-    ├── ingest/                     # Ingestion + schema test suite
-    └── utils/                      # Utility test suite
-```
-
----
-
-# Lung Segmentation
-
-The preprocessing pipeline now includes a deterministic classical lung segmentation module located at:
-
-```
-src/preprocess/segment_lung.py
-```
-
-## Overview
-
-This module provides a lightweight and dataset-agnostic baseline lung segmentation method based on:
-
-- HU thresholding  
-- 3D connected components  
-- Morphological closing  
-- Slice-wise hole filling  
-
-The segmentation function:
-
-- Accepts a 3D CT volume in Hounsfield Units  
-- Produces a binary lung mask aligned to the original voxel grid  
-- Can save the mask to a cache location for reuse  
-- Is fully deterministic: identical inputs and settings always produce identical masks  
-
-## Usage Example
-
-```python
-from src.preprocess.segment_lung import segment_lung_and_save
-
-mask = segment_lung_and_save(
-    volume_hu,                     # 3D HU array (Z, Y, X)
-    spacing_mm=(1.0, 1.0, 1.0),    # optional
-    cache_path="lung_mask.npy",
-)
-```
-
-## Testing
-
-A complete synthetic test suite is located at:
-
-```
-tests/preprocess/test_segment_lung.py
-```
-
-Tests verify:
-
-- mask plausibility  
-- repeatability/determinism  
-- correct cache saving behavior  
-- robustness to edge cases  
-
-This module fulfills the branch requirements for the classical segmentation baseline.
-
-# CT Visualization Tool Integration
-
-## CT Visualization Tool
-
-A new module `src/visualization/` provides an interactive tool for viewing CT data and associated metadata. It supports:
-
-- **NIfTI (.nii/.nii.gz)**
-- **DICOM directories**
-- **Zarr stores**
-- Axial, coronal, sagittal slice viewing
-- Window/level adjustment (lung, soft tissue, or custom)
-- Metadata panel derived from the canonical metadata schema
-- Optional interactive scrolling via Jupyter widgets
-
-This tool is intended for:
-
-- Quality control of ingested datasets
-- Exploring voxel spacing, reconstruction kernels, and CT intensity distribution
-- Reviewing CT slices before applying preprocessing or feature extraction
-- Assisting in debugging ingestion and preprocessing issues
-
-### Quickstart
-
-```python
-from src.visualization.ct_viewer import load_ct_series, get_slice, apply_window
-
-ct = load_ct_series("path/to/scan.nii.gz")   # NIfTI
-slice_2d = get_slice(ct, index=50, plane="axial")
-windowed = apply_window(slice_2d, center=-600, width=1500)
-
-import matplotlib.pyplot as plt
-plt.imshow(windowed, cmap="gray")
-plt.show()
-```
-
-### Demo Notebook
-
-```
-notebooks/exploration/ct_visualization_demo.ipynb
-```
-
-### Directory
-
-```
-src/
-  visualization/
-    ct_viewer.py
-    __init__.py
-```
-
-### Installation Requirements
-
-Add to `environment.yml`:
-
-```
-- nibabel
-- pydicom
-- zarr
-- ipywidgets
-```
-
-### Test Status
-
-```
-tests/visualization/test_ct_viewer.py
-```
-
-
-
-# Next Steps
-
-Future work planned in `docs/methodology/next_steps.md` includes:
-
-- Full CT preprocessing pipeline (segmentation, spacing normalization)
-- 3D CNN and radiomics feature extraction
-- Large-scale distributed processing
-- Exploratory ML + predictive modeling
-- Automated benchmarking tools
-- Ingestion for additional COPD imaging datasets
-
----
-
-# Getting Started
-
-### 1. Create the environment:
-
 ```bash
 conda env create -f environment.yml
 conda activate scalable-ct
 ```
 
-### 2. Run all ingestion tests:
+### 3. Run tests
 
 ```bash
-pytest -q
+pytest
 ```
 
-### 3. Build canonical metadata:
+If tests pass, your environment is correctly configured and the core pipeline imports should be working.
+
+---
+
+## Documentation
+
+All detailed documentation (methodology, metadata schema, dataset access, results) lives in the `docs/` directory.
+
+To preview documentation locally:
 
 ```bash
-python scripts/build_metadata.py     --nlst-csv data/raw_metadata/nlst_demo.csv     --copdgene-csv data/raw_metadata/copdgene_demo.csv     --lidc-csv data/raw_metadata/lidc_demo.csv     --output-dir data/metadata
+mkdocs serve
+```
+
+Then navigate to the served URL (typically `http://127.0.0.1:8000/`).
+
+Key sections:
+
+- **Methodology overview** — `docs/methodology/overview.md`
+- **Dataset-agnostic metadata schema** — `docs/methodology/metadata_schema.md`
+- **Dataset access and directory layout** — `docs/methodology/dataset_access.md`
+- **Next steps / roadmap** — `docs/methodology/next_steps.md`
+- **Results summary** — `docs/results.md`
+- **References** — `docs/references.md`
+
+If GitHub Pages is configured:
+
+```
+https://<your-username>.github.io/<your-repo-name>/
 ```
 
 ---
 
-# License
+## Repository structure (high level)
 
-MIT License (recommended; add LICENSE file if desired)
+```text
+.
+├── README.md                 # Concise repo overview and quickstart
+├── environment.yml           # Conda environment definition
+├── docs/                     # MkDocs documentation (canonical docs)
+│   ├── index.md              # Documentation landing page
+│   ├── methodology/
+│   │   ├── README.md         # Methodology index (can be auto-generated)
+│   │   ├── overview.md
+│   │   ├── project_overview.md
+│   │   ├── metadata_schema.md
+│   │   ├── dataset_access.md
+│   │   └── next_steps.md
+│   ├── results.md
+│   └── references.md
+├── src/                      # Ingestion, preprocessing, modeling code
+├── tests/                    # Test suite
+└── data/                     # Metadata and demo raw metadata files
+```
 
 ---
 
+## Contributing
+
+- Run tests frequently:
+
+```bash
+pytest
+```
+
+- Preview documentation before committing changes:
+
+```bash
+mkdocs serve
+```

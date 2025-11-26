@@ -1,0 +1,46 @@
+site_name: Scalable CT Phenotyping for COPD
+site_description: Documentation for the scalable CT phenotyping pipeline (ingestion, preprocessing, modeling).
+site_url: https://ajharris.github.io/Distributed-ML/
+repo_url: https://github.com/ajharris/Distributed-ML
+repo_name: ajharris/Distributed-ML
+
+docs_dir: docs
+
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - toc.integrate
+  language: en
+
+markdown_extensions:
+  - admonition
+  - codehilite
+  - toc:
+      permalink: true
+  - footnotes
+  - def_list
+  - attr_list
+  - tables
+
+nav:
+  - Home: index.md
+
+  - Methodology:
+      - Overview: methodology/overview.md
+      - Project overview (clinical context): methodology/project_overview.md
+      - Dataset-agnostic metadata schema: methodology/metadata_schema.md
+      - Dataset access & directory layout: methodology/dataset_access.md
+      - Next steps / roadmap: methodology/next_steps.md
+      # Optional: if you keep a local index/landing page
+      - Methodology index: methodology/README.md
+
+  - Results:
+      - Results summary: results.md
+
+  - References:
+      - References: references.md
