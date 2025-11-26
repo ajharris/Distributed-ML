@@ -20,7 +20,7 @@ The system is fully test‑driven, ensuring reproducibility and long‑term main
 
 # Current Functionality
 
-## ✅ Dataset Ingestion (COPDGene, NLST, LIDC-IDRI)
+## Dataset Ingestion (COPDGene, NLST, LIDC-IDRI)
 Each dataset has:
 - A field extraction script (`copdgene.py`, `nlst.py`, `lidc.py`)
 - A complete ingestion pipeline (`*_ingest.py`)
@@ -34,7 +34,7 @@ All ingestion modules support:
 - Type & range validation
 - Canonical Parquet export
 
-## ✅ Dataset Registry Working
+## Dataset Registry Working
 The unified registry interface provides:
 
 ```python
@@ -43,7 +43,7 @@ DatasetRegistry.get("nlst")
 DatasetRegistry.get("lidc")
 ```
 
-## ✅ Canonical Metadata Schema
+## Canonical Metadata Schema
 Defined in `metadata_schema.py` with:
 - Required fields  
 - Standardized naming  
@@ -54,16 +54,16 @@ Validators ensure:
 - Type safety  
 - Value sanity checks  
 
-## ✅ Metadata I/O Layer
+## Metadata I/O Layer
 `metadata_io.py` provides:
 - Parquet load/save
 - Schema checking
 - CSV-to-Parquet transformations
 
-## ✅ External Dataset Loading
+## External Dataset Loading
 `load_external.py` is implemented for future import of new COPD datasets.
 
-## ✅ All Tests Passing
+## All Tests Passing
 Test coverage includes:
 - Ingestion modules  
 - Validators  
@@ -72,10 +72,14 @@ Test coverage includes:
 - Logger, IO utilities  
 - Dask cluster utilities  
 
-## ✅ CLI: Build Metadata
+## CLI: Build Metadata
 
 ```bash
-python scripts/build_metadata.py     --nlst-csv data/raw_metadata/nlst_demo.csv     --copdgene-csv data/raw_metadata/copdgene_demo.csv     --lidc-csv data/raw_metadata/lidc_demo.csv     --output-dir data/metadata
+python scripts/build_metadata.py \
+--nlst-csv data/raw_metadata/nlst_demo.csv \
+--copdgene-csv data/raw_metadata/copdgene_demo.csv \
+--lidc-csv data/raw_metadata/lidc_demo.csv \
+--output-dir data/metadata
 ```
 
 Output includes:
