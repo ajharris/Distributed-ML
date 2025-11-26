@@ -258,6 +258,74 @@ Tests verify:
 
 This module fulfills the branch requirements for the classical segmentation baseline.
 
+# CT Visualization Tool Integration
+
+## CT Visualization Tool
+
+A new module `src/visualization/` provides an interactive tool for viewing CT data and associated metadata. It supports:
+
+- **NIfTI (.nii/.nii.gz)**
+- **DICOM directories**
+- **Zarr stores**
+- Axial, coronal, sagittal slice viewing
+- Window/level adjustment (lung, soft tissue, or custom)
+- Metadata panel derived from the canonical metadata schema
+- Optional interactive scrolling via Jupyter widgets
+
+This tool is intended for:
+
+- Quality control of ingested datasets
+- Exploring voxel spacing, reconstruction kernels, and CT intensity distribution
+- Reviewing CT slices before applying preprocessing or feature extraction
+- Assisting in debugging ingestion and preprocessing issues
+
+### Quickstart
+
+```python
+from src.visualization.ct_viewer import load_ct_series, get_slice, apply_window
+
+ct = load_ct_series("path/to/scan.nii.gz")   # NIfTI
+slice_2d = get_slice(ct, index=50, plane="axial")
+windowed = apply_window(slice_2d, center=-600, width=1500)
+
+import matplotlib.pyplot as plt
+plt.imshow(windowed, cmap="gray")
+plt.show()
+```
+
+### Demo Notebook
+
+```
+notebooks/exploration/ct_visualization_demo.ipynb
+```
+
+### Directory
+
+```
+src/
+  visualization/
+    ct_viewer.py
+    __init__.py
+```
+
+### Installation Requirements
+
+Add to `environment.yml`:
+
+```
+- nibabel
+- pydicom
+- zarr
+- ipywidgets
+```
+
+### Test Status
+
+```
+tests/visualization/test_ct_viewer.py
+```
+
+
 
 # Next Steps
 
