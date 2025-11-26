@@ -131,7 +131,22 @@ Standard outputs:
 
 ## 2.7 Example Metadata Table
 
-(Abridged for brevity.)
+The table below shows a **toy example** of the canonical metadata schema for
+three scans (one per dataset). Values are illustrative only.
+
+| dataset_name | patient_id      | scan_id                                         | series_uid          | modality | acquisition_date | slice_thickness_mm | spacing_x_mm | spacing_y_mm | spacing_z_mm | image_size_x | image_size_y | image_size_z | label_primary_name | label_primary_value | raw_image_path                                         | preprocessed_image_path                                              | label_mask_path                                                                 | age_at_scan_years | sex | smoking_status | pack_years |
+|-------------:|-----------------|------------------------------------------------|---------------------|----------|------------------|--------------------|--------------|--------------|--------------|--------------|--------------|--------------|--------------------|---------------------|--------------------------------------------------------|------------------------------------------------------------------------|---------------------------------------------------------------------------------|-------------------|-----|----------------|-----------|
+| NLST         | NLST_P0001      | NLST__NLST_P0001__1.2.3                        | 1.2.3               | CT       | 2005-03-12       | 1.25               | 0.70         | 0.70         | 1.25         | 512          | 512          | 350          | mortality_6yr      | 1                   | raw/NLST/NLST_P0001/series_001/                       | preprocessed/NLST/NLST_P0001/series_001.nii.gz                         | *(none)*                                                                        | 63                | F   | Former         | 25        |
+| COPDGene     | COPD-0123       | COPDGene__COPD-0123__2.25.1234567890.1.1       | 2.25.1234567890.1.1 | CT       | 2010-06-05       | 0.75               | 0.68         | 0.68         | 0.75         | 512          | 512          | 450          | copd_status        | COPD                | raw/COPDGene/COPD-0123/CT_baseline/                   | preprocessed/COPDGene/COPD-0123/CT_baseline.nii.gz                     | *(none)*                                                                        | 58                | M   | Current        | 40        |
+| LIDC-IDRI    | LIDC-IDRI-0005  | LIDC-IDRI__LIDC-IDRI-0005__1.3.6.1.4.1.14519…  | 1.3.6.1.4.1.14519…  | CT       | 2004-11-10       | 1.25               | 0.70         | 0.70         | 1.25         | 512          | 512          | 150          | nodule_malignancy  | 4                   | raw/LIDC-IDRI/LIDC-IDRI-0005/CT/                      | preprocessed/LIDC-IDRI/LIDC-IDRI-0005/series_001.nii.gz               | preprocessed/LIDC-IDRI/LIDC-IDRI-0005/series_001_nodule_mask.nii.gz  | *(unknown)*        | F   | Never          | 0         |
+
+This example demonstrates:
+
+- One row per **CT series**
+- Consistent naming across NLST, COPDGene, and LIDC-IDRI
+- Relative file paths (no leading `/`)
+- Optional clinical fields present for some scans and missing for others
+
 
 ---
 
@@ -145,10 +160,10 @@ Standard outputs:
 
 A TDD workflow will be applied to:
 
-- [ ] Define schema constants.
-- [ ] Write schema validation tests.
-- [ ] Implement dataset-agnostic constructor.
-- [ ] Build NLST ingestion.
-- [ ] Add ingestion for COPDGene and LIDC-IDRI.
-- [ ] Write dataset-level validators.
-- [ ] Produce dataset Parquet outputs.
+- [x] Define schema constants.
+- [x] Write schema validation tests.
+- [x] Implement dataset-agnostic constructor.
+- [x] Build NLST ingestion.
+- [x] Add ingestion for COPDGene and LIDC-IDRI.
+- [x] Write dataset-level validators.
+- [x] Produce dataset Parquet outputs.
