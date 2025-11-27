@@ -44,3 +44,8 @@ nav:
 
   - References:
       - References: references.md
+
+plugins:
+  # - gen-files
+
+

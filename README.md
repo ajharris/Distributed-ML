@@ -85,7 +85,7 @@ Key sections:
 If GitHub Pages is configured:
 
 ```
-https://<your-username>.github.io/<your-repo-name>/
+https://<your-username>.github.io/Distributed-ML/
 ```
 
 ---
