@@ -1,0 +1,60 @@
+name: Check Mendeley Bib Recency
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"   # every Monday at 06:00 UTC
+  workflow_dispatch:
+
+jobs:
+  check-bib-age:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Verify bib file exists
+        run: |
+          if [ ! -f literature/mendeley-library.bib ]; then
+            echo "literature/mendeley-library.bib not found."
+            echo "Create the file by exporting from Mendeley (BibTeX) and committing it."
+            exit 1
+          fi
+
+      - name: Parse Last-Exported date and check age
+        run: |
+          line=$(grep -m1 '^% Last-Exported:' literature/mendeley-library.bib || true)
+          if [ -z "$line" ]; then
+            echo "No '% Last-Exported:' line found in literature/mendeley-library.bib."
+            echo "Please add a comment like:"
+            echo "% Last-Exported: 2025-11-27"
+            exit 1
+          fi
+
+          exported_date=$(echo "$line" | sed 's/% Last-Exported:[[:space:]]*//')
+          echo "Found Last-Exported date: $exported_date"
+
+          # Convert to seconds since epoch
+          exported_ts=$(date -d "$exported_date" +%s 2>/dev/null || true)
+          if [ -z "$exported_ts" ]; then
+            echo "Could not parse Last-Exported date: '$exported_date'"
+            exit 1
+          fi
+
+          now_ts=$(date +%s)
+          # 30 days threshold
+          max_age_days=30
+          max_age_sec=$((max_age_days * 24 * 60 * 60))
+
+          age_sec=$((now_ts - exported_ts))
+
+          echo "Bib file age (seconds): $age_sec"
+          echo "Maximum allowed age (seconds): $max_age_sec"
+
+          if [ "$age_sec" -gt "$max_age_sec" ]; then
+            echo "Mendeley BibTeX export is older than ${max_age_days} days."
+            echo "Please re-export from Mendeley and commit an updated literature/mendeley-library.bib."
+            exit 1
+          else
+            echo "Mendeley BibTeX export is recent enough."
+          fi

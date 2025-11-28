@@ -39,6 +39,10 @@ nav:
       # Optional: if you keep a local index/landing page
       - Methodology index: methodology/README.md
 
+  - Literature:
+    - Overview: literature/index.md
+    - 12-Month Plan: literature/reading-plan/12_month_reading_plan.md
+
   - Results:
       - Results summary: results.md
 
