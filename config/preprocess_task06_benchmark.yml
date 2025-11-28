@@ -1,0 +1,35 @@
+dataset:
+  name: task06_demo
+  metadata_parquet: data/metadata/metadata_task06_demo.parquet
+  limit: 10
+
+paths:
+  # raw_image_path values are *full relative paths* already like:
+  # data/raw_test/Task06_Lung/imagesTr/lung_053.nii.gz
+  # so we can just set data_root to "."
+  data_root: .
+  output_root: data/cache/preprocess
+
+preprocess:
+  input_path_field: raw_image_path
+  series_uid_field: series_uid
+
+  segmentation:
+    hu_threshold: -600.0
+    min_component_size: 500
+    num_components_to_keep: 1
+    closing_iterations: 1
+    fill_holes: false
+
+  normalization:
+    target_spacing: [1.0, 1.0, 1.0]
+    hu_window: [-1000.0, 400.0]
+    apply_denoising: false
+    interpolation_order: 1
+
+  cache:
+    force_recompute: true
+
+dask:
+  n_workers: 4
+  threads_per_worker: 1
