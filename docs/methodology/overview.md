@@ -16,3 +16,17 @@ The project is designed to support **multiple medical imaging datasets** (e.g., 
 - [3. Dataset Access & Directory Layout](dataset_access.md)
 - [4. Next Steps](next_steps.md)
 
+## Benchmarking
+
+A working benchmark configuration (`config/preprocess_task06_benchmark.yml`) is provided for validating distributed preprocessing.
+
+It processes 10 CT volumes from the *Task06 Lung* dataset and verifies:
+
+- End-to-end preprocessing
+- Segmentation + normalization correctness
+- Dask scaling on multi-process execution
+- Reproducible output caching
+
+See `docs/methodology/preprocessing_pipeline.md` for full details.
+
+

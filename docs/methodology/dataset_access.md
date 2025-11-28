@@ -134,3 +134,22 @@ Any missing paths or schema mismatches will be caught before further processing.
 - [3. Dataset Access & Directory Layout](dataset_access.md)
 - [4. Next Steps](next_steps.md)
 
+## Test Data (Task06 Lung)
+
+For development and benchmarking purposes, the repository includes a subset of the **Medical Segmentation Decathlon Task06_Lung** dataset under:
+
+```
+data/raw_test/Task06_Lung/
+```
+
+These files are used exclusively for internal benchmarks and demos and are **not** part of the DatasetRegistry.
+
+The benchmark configuration:
+
+```
+config/preprocess_task06_benchmark.yml
+```
+
+uses a metadata parquet (`metadata_task06_demo.parquet`) that maps 10 Task06 volumes to the preprocessing pipeline.
+
+This allows validation of the distributed Dask pipeline without requiring access to NLST, COPDGene, or LIDC-IDRI datasets.

@@ -1,129 +1,111 @@
-# Scalable Machine Learning for Large-Scale CT Phenotyping of COPD
+# Distributed-ML: CT Preprocessing Pipeline with Dask
 
-This repository contains code and documentation for a research project on **scalable CT phenotyping** for **COPD** and lung disease. It focuses on:
+This repository implements a distributed, dataset-agnostic CT preprocessing pipeline designed for large clinical imaging datasets such as NLST, COPDGene, LIDC-IDRI, and research benchmarking datasets.
 
-- Dataset-agnostic metadata and ingestion for large chest CT cohorts.
-- CT preprocessing (normalization, resampling, segmentation).
-- Feature extraction (radiomics and deep learning–based).
-- Modeling and evaluation utilities.
-- Reproducible workflows driven by tests and environment management.
+The pipeline supports:
 
-Full, detailed documentation is provided via the MkDocs-powered documentation site.
-
----
-
-## Quick start
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/ajharris/Distributed-ML.git
-cd Distributed-ML
-```
-
-Output includes:
-- `metadata.parquet` (merged canonical metadata)
-- Per‑dataset Parquet files
-
-# CT Normalization & Resampling (Overview)
-
-Located at: `src/preprocess/normalize_resample.py`
-
-Features:
-- HU clamping
-- Optional denoising
-- Resampling to 1x1x1 mm
-- Metadata updates
-- Caching
-
-APIs:
-- normalize_and_resample
-- normalize_and_resample_with_cache
-- save_cached_volume / load_cached_volume
-- histogram_sanity_check
+- **CT loading** (DICOM/NIfTI/Zarr)
+- **Classical lung segmentation**
+- **Normalization and 3D resampling**
+- **On-disk caching for full dataset sweeps**
+- **Distributed, out-of-core preprocessing using Dask**
+- **Dataset-agnostic metadata schema**
+- **Extensive unit tests**
+- **Config-driven execution via YAML**
+- **Benchmarking mode for evaluating parallel scaling**
 
 ---
 
-# Repository Structure (with notes)
+## 🚀 Running the Distributed Preprocessing Pipeline
+
+Entry point:
 
 ```bash
-conda env create -f environment.yml
-conda activate scalable-ct
+python -m src.preprocess.run --config <your_config.yml>
 ```
 
-### 3. Run tests
+Example:
 
 ```bash
-pytest
-```
-
-If tests pass, your environment is correctly configured and the core pipeline imports should be working.
-
----
-
-## Documentation
-
-All detailed documentation (methodology, metadata schema, dataset access, results) lives in the `docs/` directory.
-
-To preview documentation locally:
-
-```bash
-mkdocs serve
-```
-
-Then navigate to the served URL (typically `http://127.0.0.1:8000/`).
-
-Key sections:
-
-- **Methodology overview** — `docs/methodology/overview.md`
-- **Dataset-agnostic metadata schema** — `docs/methodology/metadata_schema.md`
-- **Dataset access and directory layout** — `docs/methodology/dataset_access.md`
-- **Next steps / roadmap** — `docs/methodology/next_steps.md`
-- **Results summary** — `docs/results.md`
-- **References** — `docs/references.md`
-
-If GitHub Pages is configured:
-
-```
-https://<your-username>.github.io/Distributed-ML/
+python -m src.preprocess.run --config config/preprocess_task06_benchmark.yml
 ```
 
 ---
 
-## Repository structure (high level)
+## 🔧 Benchmarking (10–20 scans)
 
-```text
-.
-├── README.md                 # Concise repo overview and quickstart
-├── environment.yml           # Conda environment definition
-├── docs/                     # MkDocs documentation (canonical docs)
-│   ├── index.md              # Documentation landing page
-│   ├── methodology/
-│   │   ├── README.md         # Methodology index (can be auto-generated)
-│   │   ├── overview.md
-│   │   ├── project_overview.md
-│   │   ├── metadata_schema.md
-│   │   ├── dataset_access.md
-│   │   └── next_steps.md
-│   ├── results.md
-│   └── references.md
-├── src/                      # Ingestion, preprocessing, modeling code
-├── tests/                    # Test suite
-└── data/                     # Metadata and demo raw metadata files
+A working benchmark is provided under:
+
+```
+config/preprocess_task06_benchmark.yml
+```
+
+This runs preprocessing on **Task06 Lung (10 CT volumes)** and demonstrates:
+
+- Distributed parallel execution
+- Out-of-core caching
+- Full segmentation + normalization pipeline
+- Successful end-to-end completion
+
+To run the benchmark:
+
+```bash
+rm -rf data/cache/preprocess/task06_demo
+time python -m src.preprocess.run --config config/preprocess_task06_benchmark.yml
 ```
 
 ---
 
-## Contributing
+## 📂 Project Structure
 
-- Run tests frequently:
+```
+src/
+  ingest/                  # dataset loaders, registry
+  preprocess/              # segmentation, normalization, distributed run
+  visualization/           # CT loading and metadata viewer
+  utils/                   # logging + Dask cluster manager
 
-```bash
-pytest
+docs/
+  methodology/             # technical documentation
+
+config/
+  *.yml                    # preprocessing configs
+
+data/
+  metadata/
+  raw/
+  raw_test/                # Task06_Lung benchmark volumes
+  cache/                   # output cache
 ```
 
-- Preview documentation before committing changes:
+---
+
+## 🧪 Tests
+
+Run all unit tests with:
 
 ```bash
-mkdocs serve
+pytest -q
 ```
+
+Tests cover:
+
+- metadata ingestion  
+- CT loading  
+- segmentation  
+- normalization + caching  
+- Dask graph creation  
+- preprocessing orchestration  
+
+---
+
+## 📘 Documentation
+
+Technical documentation lives in:
+
+```
+docs/methodology/
+```
+
+Contains metadata schema, pipeline overview, segmentation, normalization, and benchmarking docs.
+

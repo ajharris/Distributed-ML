@@ -1,0 +1,34 @@
+dataset:
+  name: nlst
+  # Use your existing canonical metadata parquet:
+  metadata_parquet: data/metadata/metadata_NLST.parquet
+  # Limit to 20 for the benchmark:
+  limit: 20
+
+paths:
+  data_root: data                      # where raw_image_path / filepath is rooted
+  output_root: data/cache/preprocess   # where cache will go
+
+preprocess:
+  input_path_field: raw_image_path     # or "filepath" depending on your schema
+  series_uid_field: series_uid
+
+  segmentation:
+    hu_threshold: -600.0
+    min_component_size: 10000
+    num_components_to_keep: 2
+    closing_iterations: 2
+    fill_holes: true
+
+  normalization:
+    target_spacing: [1.0, 1.0, 1.0]
+    hu_window: [-1000.0, 400.0]
+    apply_denoising: false
+    interpolation_order: 1
+
+  cache:
+    force_recompute: true   # first run: recompute everything
+
+dask:
+  n_workers: 4
+  threads_per_worker: 1
