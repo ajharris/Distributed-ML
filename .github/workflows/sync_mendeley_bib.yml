@@ -1,0 +1,20 @@
+name: Sync Mendeley Bib (Manual Only)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  sync-bib:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # TODO: replace this with your real mechanism for updating the bib file.
+      # For now this action is just a placeholder that can be expanded later.
+      - name: Show current bib
+        run: |
+          echo "Current BibTeX file contents:"
+          cat literature/mendeley-library.bib || echo "No bib file yet."
+
+      - name: No-op
+        run: echo "Update the bib file locally from Mendeley, then commit and push."
