@@ -1,4 +1,6 @@
 name: Check Mendeley Bib Recency
+permissions:
+  contents: read
 
 on:
   schedule:
