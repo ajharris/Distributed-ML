@@ -1,5 +1,8 @@
 name: Sync Mendeley Bib (Manual Only)
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
 
